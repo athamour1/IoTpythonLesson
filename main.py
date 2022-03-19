@@ -6,6 +6,10 @@ from datetime import datetime
 import ssl
 import os
 import sys
+from dotenv import load_dotenv
+
+load_dotenv()
+print(os.environ.get("USER_NAME"))
 
 
 class IoTExample:
@@ -35,17 +39,16 @@ class IoTExample:
         self.client.on_message = self._on_message
 
         self.client.tls_set_context(ssl.SSLContext(ssl.PROTOCOL_TLSv1_2))
-        self.client.username_pw_set('iotlesson', 'YGK0tx5pbtkK2WkCBvJlJWCg')
-        self.client.connect('phoenix.medialab.ntua.gr', 8883)
+        self.client.username_pw_set(os.environ.get("USER_NAME"), os.environ.get("USER_PASSWORD"))
+        self.client.connect(os.environ.get("BROCKER_URL"), int(os.environ.get("BROCKER_PORT")))
 
     def _on_connect(self, client, userdata, flags, rc):
-        client.subscribe(
-            'hscnl/hscnl02/state/ZWaveNode005_ElectricMeterWatts/state')
-        client.subscribe('hscnl/hscnl02/command/ZWaveNode005_Switch/command')
-        client.subscribe('hscnl/hscnl02/state/ZWaveNode005_Switch/state')
+        client.subscribe(os.environ.get("SUB_TOPIC_1"))
+        client.subscribe(os.environ.get("SUB_TOPIC_2"))
+        client.subscribe(os.environ.get("SUB_TOPIC_3"))
 
     def _on_message(self, client, userdata, msg):
-        if msg.topic == 'hscnl/hscnl02/state/ZWaveNode005_ElectricMeterWatts/state':
+        if msg.topic == os.environ.get("SUB_TOPIC_1"):
             self._add_value_to_plot(float(msg.payload))
         print(msg.topic+' '+str(msg.payload))
 
@@ -92,9 +95,9 @@ class IoTExample:
         self.lineplot.set_data(self.dataX, self.dataY)
         self._refresh_plot()
     def _button_off_clicked(self, event):
-        self.client.publish('hscnl/hscnl02/sendcommand/ZWaveNode005_Switch', 'OFF')
+        self.client.publish(os.environ.get("PUB_TOPIC_1"), os.environ.get("PUB_MESSAGE_1"))
     def _button_on_clicked(self, event):
-        self.client.publish('hscnl/hscnl02/sendcommand/ZWaveNode005_Switch', 'ON')
+        self.client.publish(os.environ.get("PUB_TOPIC_2"), os.environ.get("PUB_MESSAGE_2"))
 
 try:
     iot_example = IoTExample()
