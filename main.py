@@ -10,22 +10,36 @@ import sys
 class IoTExample:
     def __init__(self):
         self._establish_mqtt_connection()
+
     # call this method to start the client loop
     def start(self):
         self.client.loop_forever()
+
     # call this method to disconnect from the broker
     def disconnect(self, args=None):
         self.client.disconnect()
+
     # disconnect
     def _establish_mqtt_connection(self):
-        print('Successful connection')
-        client.subscribe('hscnl/hscnl02/state/ZWaveNode005_Switch/state')
+        self.client = mqtt.Client()
+        self.client.on_connect = self._on_connect
+        self.client.on_log = self._on_log
+        self.client.on_message = self._on_message
+
+        self.client.tls_set_context(ssl.SSLContext(ssl.PROTOCOL_TLSv1_2))
+        self.client.username_pw_set('iotlesson', 'YGK0tx5pbtkK2WkCBvJlJWCg')
+        self.client.connect('phoenix.medialab.ntua.gr', 8883)
+        # client.subscribe('hscnl/hscnl02/state/ZWaveNode005_Switch/state')
+
     def _on_connect(self, client, userdata, flags, rc):
         print('I need to be completed')
+
     def _on_message(self, client, userdata, msg):
         print(msg.topic+' '+str(msg.payload))
+
     def _on_log(self, client, userdata, level, buf):
         print('log: ', buf)
+
 try:
     iot_example = IoTExample()
     iot_example.start()
