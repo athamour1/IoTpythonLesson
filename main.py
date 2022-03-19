@@ -68,6 +68,13 @@ class IoTExample:
         self.ax.figure.canvas.mpl_connect('close_event', self.disconnect)
         self.finishing = False
         self._my_timer()
+        axcut = plt.axes([0.0, 0.0, 0.1, 0.06])
+        self.bcut = Button(axcut, 'ON')
+        axcut2 = plt.axes([0.1, 0.0, 0.1, 0.06])
+        self.bcut2 = Button(axcut2, 'OFF')
+        self.state_field = plt.text(1.5, 0.3, 'STATE: -')
+        self.bcut.on_clicked(self._button_on_clicked)
+        self.bcut2.on_clicked(self._button_off_clicked)
 
     def _refresh_plot(self):
         if len(self.dataX) > 0:
@@ -84,7 +91,10 @@ class IoTExample:
         self.dataY.append(value)
         self.lineplot.set_data(self.dataX, self.dataY)
         self._refresh_plot()
-
+    def _button_off_clicked(self, event):
+        self.client.publish('hscnl/hscnl02/sendcommand/ZWaveNode005_Switch', 'OFF')
+    def _button_on_clicked(self, event):
+        self.client.publish('hscnl/hscnl02/sendcommand/ZWaveNode005_Switch', 'ON')
 
 try:
     iot_example = IoTExample()
