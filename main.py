@@ -29,10 +29,11 @@ class IoTExample:
         self.client.tls_set_context(ssl.SSLContext(ssl.PROTOCOL_TLSv1_2))
         self.client.username_pw_set('iotlesson', 'YGK0tx5pbtkK2WkCBvJlJWCg')
         self.client.connect('phoenix.medialab.ntua.gr', 8883)
-        # client.subscribe('hscnl/hscnl02/state/ZWaveNode005_Switch/state')
 
     def _on_connect(self, client, userdata, flags, rc):
-        print('I need to be completed')
+        client.subscribe('hscnl/hscnl02/state/ZWaveNode005_ElectricMeterWatts/state')
+        client.subscribe('hscnl/hscnl02/command/ZWaveNode005_Switch/command')
+        client.subscribe('hscnl/hscnl02/state/ZWaveNode005_Switch/state')
 
     def _on_message(self, client, userdata, msg):
         print(msg.topic+' '+str(msg.payload))
