@@ -1,12 +1,11 @@
 import paho.mqtt.client as mqtt
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Button
-from threading import Timer
-from datetime import datetime
+# import matplotlib.pyplot as plt
+# from matplotlib.widgets import Button
+# from threading import Timer
+# from datetime import datetime
 import ssl
 import os
 import sys
-
 
 class IoTExample:
     def __init__(self):
@@ -19,6 +18,9 @@ class IoTExample:
         self.client.disconnect()
     # disconnect
     def _establish_mqtt_connection(self):
+        print('Successful connection')
+        client.subscribe('hscnl/hscnl02/state/ZWaveNode005_Switch/state')
+    def _on_connect(self, client, userdata, flags, rc):
         print('I need to be completed')
     def _on_message(self, client, userdata, msg):
         print(msg.topic+' '+str(msg.payload))
